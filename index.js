@@ -1,4 +1,5 @@
 const express = require('express');
+const faker = require('faker');
 
 const app = express();
 const port = 3005;
@@ -7,11 +8,22 @@ app.get('/', (request, response) => {
   response.send('Hola mi server en express');
 });
 app.get('/products', (req, res) => {
-  res.json([
-    { name: 'play station 2', price: 20000 },
-    { name: 'play station 4', price: 30000 },
-    { name: 'play station 5', price: 50000 },
-  ]);
+  const products = [];
+  const { size } = req.query;
+  const limit = size || 10;
+
+  for (let i = 0; i < limit; i++) {
+    products.push({
+      name: faker.commerce.productName(),
+      price: Number(faker.commerce.price()),
+      image: faker.image.imageUrl(),
+    });
+  }
+  res.json(products);
+});
+
+app.get('/products/filter', (rep, res) => {
+  res.send('soy un filter');
 });
 app.get('/products/:id', (req, res) => {
   const { id } = req.params;
@@ -28,4 +40,18 @@ app.get('/categories/:categoryId/products/:productId', (req, res) => {
 
 app.listen(port, () => {
   console.log('Mi port' + port);
+});
+
+// Parametros tipo query para obtener datos
+
+app.get('/users', (req, res) => {
+  const { limit, offset } = req.query;
+  if (limit && offset) {
+    res.json({
+      limit,
+      offset,
+    });
+  } else {
+    res.send('No hay parametros');
+  }
 });
