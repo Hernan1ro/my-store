@@ -15,10 +15,14 @@ router.get('/filter', async (rep, res) => {
   res.send('soy un filter');
 });
 // Get a single products
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
-  const product = await service.findOne(id);
-  res.json(product);
+router.get('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const product = await service.findOne(id);
+    res.json(product);
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Post element
