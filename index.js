@@ -5,15 +5,15 @@ const {
   logErrors,
   errorHandler,
   boomErrorHandler,
-} = require('./middlewares/error.handler');
+} = require('./middlewares/errorHandler');
 const app = express();
-const port = 3005;
+const port = process.env.PORT || 3005;
 
 app.use(express.json());
 const whiteList = ['http://127.0.0.1:5500', 'http://localhost:5000'];
 const options = {
   origin: (origin, callback) => {
-    if (whiteList.includes(origin)) {
+    if (whiteList.includes(origin) || !origin) {
       callback(null, true);
     } else {
       callback(new Error('No permitido'));
