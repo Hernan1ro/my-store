@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const routerApi = require('./routes');
 const {
   logErrors,
@@ -9,6 +10,17 @@ const app = express();
 const port = 3005;
 
 app.use(express.json());
+const whiteList = ['http://127.0.0.1:5500', 'http://localhost:5000'];
+const options = {
+  origin: (origin, callback) => {
+    if (whiteList.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido'));
+    }
+  },
+};
+app.use(cors(options));
 
 // Crear un servidor
 app.get('/', (request, response) => {
